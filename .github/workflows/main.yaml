@@ -25,8 +25,14 @@ jobs:
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
+    - name: Add remote server to known hosts
+      run: ssh-keyscan -p 19099 ehr.stalent.cn >> ~/.ssh/known_hosts
+
     - name: Sync to remote server
       run: |
         rsync -avz --progress --delete -e "ssh -p 19099" \
-          dist/*.whl \
-          chenxueliang@ehr.stalant.cn:/home/chenxueliang/lyb/capybara/dist/
+          dist/ \
+          chenxueliang@ehr.stalent.cn:/home/chenxueliang/lby/capybara/dist/
+    
+    - name: Trigger remote server refresh
+      run: "curl -H \"Authorization: Bearer ${{ secrets.TRIGGER_TOKEN }}\" http://ehr.stalent.cn:19096?dist=capybara"
