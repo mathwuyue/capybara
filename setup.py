@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="capybara",
-    version="0.1.0",
+    version="0.1.1",
     packages=find_packages(),
     install_requires=[
         "fastapi>=0.115.6",
@@ -30,12 +30,12 @@ setup(
         "sentence_transformers>=2.2.2",
         "uvicorn>=0.34.0",
     ],
-    author="Your Name",
+    author="Yue Wu",
     author_email="your.email@example.com",
     description="A short description of your capybara project",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/capybara",
+    url="https://github.com/mathwuyue/capybara",
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
