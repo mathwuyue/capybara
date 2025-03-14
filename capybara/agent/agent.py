@@ -15,6 +15,14 @@ load_dotenv()
 model = os.getenv("MODEL")
 # model = "llama3-70b-instruct"
 
+# Check if Redis module is available
+try:
+    import redis
+
+    HAS_REDIS = True
+except ImportError:
+    HAS_REDIS = False
+
 
 class AgentConfig(BaseModel):
     user_id: str = Field(..., description="User identifier")
@@ -117,6 +125,9 @@ class Agent:
             yield llm_resp
         # save to history
         if self.config.is_save_assistant:
+            if HAS_REDIS:
+                r = redis.Redis()
+                r.set(self.config.user_id + ":assitant:ans", agent_resp, ex=120)
             self._store_history("assistant", agent_resp)
 
 
