@@ -64,7 +64,6 @@ class Agent:
                 message=message,
                 state=state,
             )
-            print("save to history")
         except Exception as e:
             logger.error(f"Failed to store history: {e}")
             raise
@@ -126,6 +125,7 @@ class ChatAgent(Agent):
         else:
             history = []
         # store user query in UserHistory
+        print("save user history in ChatAgent")
         self._store_history("user", query, state)
         # create query
         if agent_type == "default":
@@ -171,6 +171,7 @@ class NullAgent(Agent):
             for d in zip(content, finish_reason)
         ]
         # save to history
+        print("save user history in NullAgent")
         self._store_history("user", query)
         self._store_history("assistant", message)
         for chunk in resp:
