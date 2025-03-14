@@ -25,6 +25,18 @@ class AgentConfig(BaseModel):
     priority: Optional[int] = Field(
         default=0, description="Priority level (optional)", ge=0, le=100
     )
+    is_save_query: Optional[bool] = Field(
+        default=True, description="Flag to save history (optional)"
+    )
+    is_save_assistant: Optional[bool] = Field(
+        default=True, description="Flag to save assistant response (optional)"
+    )
+    is_save_memory: Optional[bool] = Field(
+        default=True, description="Flag to save memory (optional)"
+    )
+    is_save_humanmeta: Optional[bool] = Field(
+        default=True, description="Flag to save human meta (optional)"
+    )
 
 
 class Agent:
@@ -104,7 +116,8 @@ class Agent:
             agent_resp = llm_resp.choices[0].message.content
             yield llm_resp
         # save to history
-        self._store_history("assistant", agent_resp)
+        if self.config.is_save_assistant:
+            self._store_history("assistant", agent_resp)
 
 
 class ChatAgent(Agent):
@@ -125,8 +138,8 @@ class ChatAgent(Agent):
         else:
             history = []
         # store user query in UserHistory
-        print("save user history in ChatAgent")
-        self._store_history("user", query, state)
+        if self.config.is_save_query:
+            self._store_history("user", query, state)
         # create query
         if agent_type == "default":
             if context:
@@ -171,7 +184,6 @@ class NullAgent(Agent):
             for d in zip(content, finish_reason)
         ]
         # save to history
-        print("save user history in NullAgent")
         self._store_history("user", query)
         self._store_history("assistant", message)
         for chunk in resp:
