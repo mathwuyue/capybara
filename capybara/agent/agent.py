@@ -27,9 +27,7 @@ except ImportError:
 class AgentConfig(BaseModel):
     user_id: str = Field(..., description="User identifier")
     session_id: UUID = Field(..., description="Session identifier")
-    model: Optional[str] = Field(
-        default="qwen2.5-instruct-awq", description="Model identifier"
-    )
+    model: Optional[str] = Field(default=model, description="Model identifier")
     priority: Optional[int] = Field(
         default=0, description="Priority level (optional)", ge=0, le=100
     )
