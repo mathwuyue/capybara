@@ -135,6 +135,7 @@ class ChatAgent(Agent):
         self,
         query: str,
         state: int,
+        sys_msg: str = "You are a helpful assistant",
         agent_type: str = "default",
         template=None,
         context: dict = None,
@@ -153,12 +154,12 @@ class ChatAgent(Agent):
         # create query
         if agent_type == "default":
             if context:
-                system_msg = template(query, **context)
+                query = template(query, **context)
             else:
-                system_msg = template(query)
+                query = template(query)
             async for chunk in self._user_llm(
-                system_msg,
-                "你是一个中文助手，总是使用中文进行推理和回复",
+                query,
+                sys_msg,
                 history,
                 temperature,
                 stream,
