@@ -91,7 +91,7 @@ class Agent:
         query: str,
         sys_msg: str,
         history: list,
-        temperature: float = 0.85,
+        temperature: float = 0.8,
         stream: bool = False,
     ):
         """User LLM. Final return to user
@@ -101,6 +101,7 @@ class Agent:
             agent_resp = ""
             response = await llm(
                 query,
+                sys_msg=sys_msg,
                 model=self.config.model,
                 history=history,
                 temperature=temperature,
@@ -156,7 +157,11 @@ class ChatAgent(Agent):
             else:
                 system_msg = template(query)
             async for chunk in self._user_llm(
-                query, system_msg, history, temperature, stream
+                system_msg,
+                "你是一个中文助手，总是使用中文进行推理和回复",
+                history,
+                temperature,
+                stream,
             ):
                 yield chunk
 
