@@ -6,9 +6,8 @@ from datetime import datetime
 
 import dashscope
 from dotenv import load_dotenv
+from loguru import logger
 from openai import AsyncOpenAI
-
-from .logger import logger
 
 load_dotenv()
 
@@ -107,5 +106,5 @@ def chunk_to_dict(chunk) -> dict:
 
 
 if __name__ == "__main__":
-    response = asyncio.run(llm("你好", "gpt-4o-mini"))
+    response = asyncio.run(llm("你好", "qwen-plus"))
     print(response)

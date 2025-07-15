@@ -1,0 +1,69 @@
+generator client {
+  provider             = "prisma-client-py"
+  recursive_type_depth = 5
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL") // Use an environment variable for the database URL
+}
+
+model Message {
+  id                  String              @id @default(uuid()) @db.Uuid
+  created_at          DateTime            @default(now())
+  user                String
+  query               String              @db.Text
+  answer              String              @db.Text
+  feedback            Int                 @default(0) @db.SmallInt
+  conversation        Conversation        @relation(fields: [conversation_id], references: [id])
+  conversation_id     String              @db.Uuid
+  message_files       MessageFile[]
+  retriever_resources RetrieverResource[]
+
+  @@index([user, conversation_id])
+}
+
+model Conversation {
+  id           String    @id @default(uuid()) @db.Uuid
+  user         String
+  name         String    @default("新建会話")
+  introduction String?
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
+  is_deleted   Boolean   @default(false)
+  messages     Message[]
+
+  @@index([user])
+}
+
+enum FileOwner {
+  user
+  assistant
+}
+
+model MessageFile {
+  id         String    @id @default(uuid()) @db.Uuid
+  type       String
+  url        String
+  belongs_to FileOwner
+  message    Message   @relation(fields: [message_id], references: [id])
+  message_id String    @db.Uuid
+
+  @@index([message_id])
+}
+
+model RetrieverResource {
+  id            String   @id @default(uuid()) @db.Uuid
+  position      Int
+  dataset_id    String   @db.Uuid
+  dataset_name  String
+  document_id   String   @db.Uuid
+  document_name String
+  segment_id    String   @db.Uuid
+  score         Float
+  content       String   @db.Text
+  message       Message  @relation(fields: [message_id], references: [id])
+  message_id    String   @db.Uuid
+
+  @@index([message_id])
+}
