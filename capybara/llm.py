@@ -30,7 +30,7 @@ async def llm(
     history=[],
     json_format=None,
     is_text=False,
-    is_think=False,
+    is_reasoning=False,
     is_search=False,
     thinking_budget=0,
     is_advanced_search=False,
@@ -43,7 +43,7 @@ async def llm(
         )
     else:
         messages = history + [{"role": "user", "content": query}]
-    if is_think:
+    if is_reasoning:
         top_p = 0.95
     try:
         start = time.time()
@@ -55,7 +55,7 @@ async def llm(
                 api_key=os.getenv("DASHSCOPE_API_KEY"),
                 model=model,
                 messages=messages,
-                enable_thinking=is_think,
+                enable_thinking=is_reasoning,
                 enable_search=True,  # 开启联网搜索的参数
                 search_options=SEARCH_OPTIONS.update(
                     {
@@ -71,7 +71,7 @@ async def llm(
                 top_p=top_p,
             )
         else:
-            extra_body = {"enable_thinking": is_think, "enable_search": is_search}
+            extra_body = {"enable_thinking": is_reasoning, "enable_search": is_search}
             if is_search:
                 extra_body.update({"search_options": SEARCH_OPTIONS})
             if thinking_budget > 0:
